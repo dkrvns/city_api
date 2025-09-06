@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "city-api"
+version = "0.1.0"
+description = ""
+authors = ["dkrvns <danila.krn@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+adaptix = "^3.0.0b11"
+fastapi = "^0.116.1"
+dishka = "^1.6.0"
+sqlalchemy = "^2.0.43"
+ruff = "^0.12.11"
+alembic = "^1.16.5"
+psycopg = "^3.2.9"
+dotenv = "^0.9.9"
+uvicorn = "^0.35.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
