@@ -31,7 +31,8 @@ exclude = [
   "dist",
   "*.pyc",
   "migrations",
-  "node_modules"
+  "node_modules",
+  "app/infrastructure/grpc"
 ]
 
 # Настройка isort (сортировка импортов)

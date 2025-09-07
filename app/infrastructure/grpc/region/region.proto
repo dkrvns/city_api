@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package region;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+message Region {
+    string id = 1;
+    string name = 2;
+    string capital = 3;
+}
+
+message NewRegionDTO {
+    string name = 1;
+    string capital = 2;
+}
+
+message RegionIdRequest {
+    string region_id = 1;
+}
+
+message RegionIdResponse {
+    string region_id = 1;
+}
+
+service RegionService {
+    rpc GetRegions(google.protobuf.Empty) returns (RegionList);
+    rpc GetRegionById(RegionIdRequest) returns (Region);
+    rpc CreateRegion(NewRegionDTO) returns (RegionIdResponse);
+    rpc DeleteRegion(RegionIdRequest) returns (google.protobuf.Empty);
+}
+
+message RegionList {
+    repeated Region regions = 1;
+}
