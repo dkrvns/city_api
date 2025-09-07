@@ -39,6 +39,7 @@ from app.infrastructure.db.main import new_session_maker
 from app.infrastructure.gateway.city import CityGateway
 from app.infrastructure.gateway.district import DistrictGateway
 from app.infrastructure.gateway.region import RegionGateway
+from app.infrastructure.grpc.region.region_pb2_grpc import RegionService
 
 
 class AppProvider(Provider):
@@ -66,6 +67,11 @@ class AppProvider(Provider):
     get_regions_interactor = provide(GetRegionsInteractor, scope=Scope.REQUEST)
     create_region_interactor = provide(CreateRegionInteractor, scope=Scope.REQUEST)
     delete_region_interactor = provide(DeleteRegionInteractor, scope=Scope.REQUEST)
+
+    region_grpc_service = provide(
+        RegionService,
+        scope=Scope.REQUEST
+    )
 
     #district
     district_gateway = provide(

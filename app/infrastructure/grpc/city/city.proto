@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package city;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+message City {
+  string id = 1;
+  string district_id = 2;
+  string name = 3;
+  string obj_type = 4;
+  int32 population = 5;
+}
+
+message NewCityDTO {
+  string district_id = 1;
+  string name = 2;
+  string obj_type = 3;
+  int32 population = 4;
+}
+
+message CityIdRequest {
+  string city_id = 1;
+}
+
+message DistrictIdRequest {
+  string district_id = 1;
+}
+
+message CityList {
+  repeated City cities = 1;
+}
+
+message CityIdResponse {
+  string city_id = 1;
+}
+
+service CityService {
+  rpc GetCities(google.protobuf.Empty) returns (CityList);
+  rpc GetCitiesByDistrictId(DistrictIdRequest) returns (CityList);
+  rpc GetCityById(CityIdRequest) returns (City);
+  rpc CreateCity(NewCityDTO) returns (CityIdResponse);
+  rpc DeleteCity(CityIdRequest) returns (google.protobuf.Empty);
+}

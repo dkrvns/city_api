@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package district;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+message District {
+  string id = 1;
+  string region_id = 2;
+  string name = 3;
+}
+
+message NewDistrictDTO {
+  string region_id = 1;
+  string name = 2;
+}
+
+message DistrictIdRequest {
+  string district_id = 1;
+}
+
+message RegionIdRequest {
+  string region_id = 1;
+}
+
+message DistrictList {
+  repeated District districts = 1;
+}
+
+message DistrictIdResponse {
+  string district_id = 1;
+}
+
+service DistrictService {
+  rpc GetDistricts(google.protobuf.Empty) returns (DistrictList);
+  rpc GetDistrictsByRegionId(RegionIdRequest) returns (DistrictList);
+  rpc GetDistrictById(DistrictIdRequest) returns (District);
+  rpc CreateDistrict(NewDistrictDTO) returns (DistrictIdResponse);
+  rpc DeleteDistrict(DistrictIdRequest) returns (google.protobuf.Empty);
+}
