@@ -59,7 +59,9 @@ class CityGateway(
         query = insert(City).values(
             id=city.id,
             district_id=city.district_id,
-            name=city.name
+            name=city.name,
+            obj_type=city.obj_type,
+            population=city.population
         )
 
         await self._session.execute(query)
