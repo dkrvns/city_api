@@ -8,6 +8,7 @@ from app.application.interface.city.city import (
     CityDeleter,
     CityReader,
     CitySaver,
+    CityUpdater,
 )
 from app.domain.entities.city import CityDM
 from app.infrastructure.db.models import City
@@ -16,7 +17,8 @@ from app.infrastructure.db.models import City
 class CityGateway(
     CitySaver,
     CityReader,
-    CityDeleter
+    CityDeleter,
+    CityUpdater
 ):
     def __init__(self, session: AsyncSession):
         self._session = session
@@ -72,6 +74,16 @@ class CityGateway(
             and_(City.id == city_id),
         ).values(is_deleted=True)
 
+        await self._session.execute(stmt)
+        await self._session.commit()
+
+    async def update_by_uuid(self, city: CityDM) -> None:
+        print('!@#!@#!3', city.__dict__)
+        stmt = update(City).where(
+            and_(City.id == city.id)
+        ).values(
+            **city.__dict__
+        )
         await self._session.execute(stmt)
         await self._session.commit()
 

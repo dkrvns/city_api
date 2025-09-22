@@ -17,6 +17,9 @@ class EntityAlreadyExistsError(ApplicationError):
 
 @dataclass(eq=False)
 class EntityNotExistsError(ApplicationError):
+    def __init__(self, message: str = "Entity doesn't exists") -> None:
+        self.msg = message
+
     @property
     def message(self) -> str:
-        return "Entity doesn't exist"
+        return self.msg

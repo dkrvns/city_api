@@ -6,7 +6,7 @@ from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, HTTPException
 from starlette import status
 
-from app.application.dto.city import NewCityDTO
+from app.application.dto.city import NewCityDTO, UpdatedCityDTO
 from app.application.errors import EntityNotExistsError
 from app.application.interactors.city import (
     CreateCityInteractor,
@@ -14,6 +14,7 @@ from app.application.interactors.city import (
     GetCitiesByDistrictIdInteractor,
     GetCitiesInteractor,
     GetCityByIdInteractor,
+    UpdateCityInteractor,
 )
 from app.presentation.schemas.city import City
 
@@ -112,5 +113,22 @@ async def create_city(
 async def delete_city(
     interactor: FromDishka[DeleteCityInteractor],
     city_id: UUID,
-):
+) -> None:
     await interactor(city_id=city_id)
+
+
+@city_router.put("/update_city")
+@inject
+async def update_city(
+    interactor: FromDishka[UpdateCityInteractor],
+    city_schema: UpdatedCityDTO,
+) -> UUID:
+    try:
+        city_id = await interactor(city_schema)
+    except EntityNotExistsError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=e.msg
+        )
+
+    return city_id

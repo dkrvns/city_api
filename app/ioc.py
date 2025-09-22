@@ -9,6 +9,7 @@ from app.application.interactors.city import (
     GetCitiesByDistrictIdInteractor,
     GetCitiesInteractor,
     GetCityByIdInteractor,
+    UpdateCityInteractor,
 )
 from app.application.interactors.district import (
     CreateDistrictInteractor,
@@ -23,7 +24,12 @@ from app.application.interactors.region import (
     GetRegionByIdInteractor,
     GetRegionsInteractor,
 )
-from app.application.interface.city.city import CityDeleter, CityReader, CitySaver
+from app.application.interface.city.city import (
+    CityDeleter,
+    CityReader,
+    CitySaver,
+    CityUpdater,
+)
 from app.application.interface.district.district import (
     DistrictDeleter,
     DistrictReader,
@@ -90,10 +96,11 @@ class AppProvider(Provider):
     city_gateway = provide(
         CityGateway,
         scope=Scope.REQUEST,
-        provides=AnyOf[CitySaver, CityReader, CityDeleter],
+        provides=AnyOf[CitySaver, CityReader, CityDeleter, CityUpdater],
     )
     get_cities_interactor = provide(GetCitiesInteractor, scope=Scope.REQUEST)
     get_cities_by_district_id_interactor = provide(GetCitiesByDistrictIdInteractor, scope=Scope.REQUEST)
     get_city_by_id_interactor = provide(GetCityByIdInteractor, scope=Scope.REQUEST)
     create_city_interactor = provide(CreateCityInteractor, scope=Scope.REQUEST)
     delete_city_interactor = provide(DeleteCityInteractor, scope=Scope.REQUEST)
+    update_city_interactor = provide(UpdateCityInteractor, scope=Scope.REQUEST)

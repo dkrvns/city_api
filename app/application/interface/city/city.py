@@ -30,3 +30,9 @@ class CityDeleter(Protocol):
     @abstractmethod
     async def delete_by_uuid(self, city_id: UUID) -> None:
         ...
+
+
+class CityUpdater(Protocol):
+    @abstractmethod
+    async def update_by_uuid(self, city: CityDM) -> None:
+        ...
