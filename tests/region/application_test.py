@@ -40,7 +40,7 @@ def get_region_by_uuid() -> GetRegionByIdInteractor:
     return GetRegionByIdInteractor(region_gateway)
 
 
-@pytest.mark.parametrize('region_id', [uuid.uuid4()])
+@pytest.mark.parametrize('region_id', [uuid.uuid4(), uuid.uuid4()])
 async def test_get_region_by_uuid(
     get_region_by_uuid: GetRegionByIdInteractor, region_id: uuid.UUID
 ):
@@ -100,7 +100,7 @@ def delete_region() -> DeleteRegionInteractor:
     return DeleteRegionInteractor(region_gateway)
 
 
-@pytest.mark.parametrize('region_id', [uuid.uuid4()])
+@pytest.mark.parametrize('region_id', [uuid.uuid4(), uuid.uuid4()])
 async def test_delete_region(
     delete_region: DeleteRegionInteractor, region_id: uuid.UUID
 ):

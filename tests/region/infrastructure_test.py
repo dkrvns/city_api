@@ -27,6 +27,8 @@ async def test_create_region(
     await session.execute(stmt)
 
     result = await region_gateway.get_by_uuid(uuid)
+
+    assert str(result.id) == uuid
     assert result.name == name
     assert result.capital == capital
 
@@ -62,11 +64,26 @@ async def test_create_few_regions(
     )
     await region_gateway.save(region_first)
     await region_gateway.save(region_second)
-
     result = await region_gateway.get_regions()
+
     assert len(result) == 2
     assert str(result[0].id) == region_first.id
     assert str(result[1].id) == region_second.id
+
+
+async def test_exist_with_name(
+    session: AsyncSession, region_gateway: RegionGateway, faker: Faker
+) -> None:
+    uuid = faker.uuid4()
+    name = faker.pystr()
+    capital = faker.pystr()
+
+    stmt = insert(Region).values(id=uuid, name=name, capital=capital)
+
+    await session.execute(stmt)
+
+    result = await region_gateway.exist_with_name(name)
+    assert result == True
 
 
 async def test_delete_region(
