@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from uuid import uuid4
 
 from dishka import AnyOf, Provider, Scope, from_context, provide
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -40,6 +41,7 @@ from app.application.interface.region.region import (
     RegionReader,
     RegionSaver,
 )
+from app.application.interface.uuid_generator import UUIDGenerator
 from app.config import Config
 from app.infrastructure.db.main import new_session_maker
 from app.infrastructure.gateway.city import CityGateway
@@ -50,6 +52,10 @@ from app.infrastructure.grpc.region.region_pb2_grpc import RegionService
 
 class AppProvider(Provider):
     config = from_context(provides=Config, scope=Scope.APP)
+
+    @provide(scope=Scope.APP)
+    def get_uuid_generator(self) -> UUIDGenerator:
+        return uuid4
 
     @provide(scope=Scope.APP)
     def get_session_maker(self, config: Config) -> async_sessionmaker[AsyncSession]:
