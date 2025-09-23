@@ -13,10 +13,7 @@ from app.domain.entities.region import RegionDM
 
 
 class GetRegionsInteractor:
-    def __init__(
-        self,
-        region_gateway: RegionReader
-    ):
+    def __init__(self, region_gateway: RegionReader):
         self._region_gateway = region_gateway
 
     async def __call__(self) -> Sequence[RegionDM]:
@@ -24,10 +21,7 @@ class GetRegionsInteractor:
 
 
 class GetRegionByIdInteractor:
-    def __init__(
-        self,
-        region_gateway: RegionReader
-    ):
+    def __init__(self, region_gateway: RegionReader):
         self._region_gateway = region_gateway
 
     async def __call__(self, region_id: uuid.UUID) -> RegionDM | None:
@@ -35,21 +29,13 @@ class GetRegionByIdInteractor:
 
 
 class CreateRegionInteractor:
-    def __init__(
-        self,
-        region_gateway: RegionSaver,
-        uuid_generator: UUIDGenerator
-    ):
+    def __init__(self, region_gateway: RegionSaver, uuid_generator: UUIDGenerator):
         self._region_gateway = region_gateway
         self._uuid_generator = uuid_generator
 
     async def __call__(self, region: NewRegionDTO) -> uuid:
         region_id = self._uuid_generator()
-        region = RegionDM(
-            id=region_id,
-            name=region.name,
-            capital=region.capital
-        )
+        region = RegionDM(id=region_id, name=region.name, capital=region.capital)
         if await self._region_gateway.exist_with_name(region_name=region.name):
             raise EntityAlreadyExistsError
 
@@ -58,10 +44,7 @@ class CreateRegionInteractor:
 
 
 class DeleteRegionInteractor:
-    def __init__(
-            self,
-        region_gateway: RegionDeleter
-    ):
+    def __init__(self, region_gateway: RegionDeleter):
         self._region_gateway = region_gateway
 
     async def __call__(self, region_id: uuid.UUID) -> None:

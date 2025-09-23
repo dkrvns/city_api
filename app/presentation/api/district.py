@@ -17,10 +17,10 @@ from app.application.interactors.district import (
 )
 from app.presentation.schemas.district import District
 
-district_router = APIRouter(prefix="/districts", tags=["districts"])
+district_router = APIRouter(prefix='/districts', tags=['districts'])
 
 
-@district_router.get("/get_districts")
+@district_router.get('/get_districts')
 @inject
 async def get_districts(
     interactor: FromDishka[GetDistrictsInteractor],
@@ -28,8 +28,7 @@ async def get_districts(
     district_dms = await interactor()
     if not district_dms:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Districts not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail='Districts not found'
         )
 
     return [
@@ -42,7 +41,7 @@ async def get_districts(
     ]
 
 
-@district_router.get("/get_districts_by_region")
+@district_router.get('/get_districts_by_region')
 @inject
 async def get_districts_by_region_id(
     interactor: FromDishka[GetDistrictsByRegionIdInteractor],
@@ -51,8 +50,7 @@ async def get_districts_by_region_id(
     district_dms = await interactor(region_id=region_id)
     if not district_dms:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="District not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail='District not found'
         )
 
     return [
@@ -65,7 +63,7 @@ async def get_districts_by_region_id(
     ]
 
 
-@district_router.get("/get_district_by_id")
+@district_router.get('/get_district_by_id')
 @inject
 async def get_district_by_id(
     interactor: FromDishka[GetDistrictByIdInteractor],
@@ -74,8 +72,7 @@ async def get_district_by_id(
     district_dm = await interactor(district_id=district_id)
     if not district_dm:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="District not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail='District not found'
         )
 
     return District(
@@ -85,7 +82,7 @@ async def get_district_by_id(
     )
 
 
-@district_router.post("/create_district")
+@district_router.post('/create_district')
 @inject
 async def create_district(
     interactor: FromDishka[CreateDistrictInteractor],
@@ -96,12 +93,12 @@ async def create_district(
     except EntityNotExistsError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Region not found. Please check if this region exists or create it"
+            detail='Region not found. Please check if this region exists or create it',
         )
     return district_id
 
 
-@district_router.delete("/delete_district")
+@district_router.delete('/delete_district')
 @inject
 async def delete_district(
     interactor: FromDishka[DeleteDistrictInteractor],

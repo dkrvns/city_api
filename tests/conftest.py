@@ -16,24 +16,23 @@ pytestmark = pytest.mark.asyncio
 
 load_dotenv()
 
-@pytest.fixture(scope="session")
+
+@pytest.fixture(scope='session')
 def postgres_config() -> PostgresConfig:
     return PostgresConfig(
-        POSTGRES_USER=os.getenv("POSTGRES_USER"),
-        POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD"),
-        POSTGRES_HOST=os.getenv("POSTGRES_HOST"),
-        POSTGRES_PORT=int(os.getenv("TEST_PORT")),
-        POSTGRES_DB=os.getenv("TEST_DB"),
+        POSTGRES_USER=os.getenv('POSTGRES_USER'),
+        POSTGRES_PASSWORD=os.getenv('POSTGRES_PASSWORD'),
+        POSTGRES_HOST=os.getenv('POSTGRES_HOST'),
+        POSTGRES_PORT=int(os.getenv('TEST_PORT')),
+        POSTGRES_DB=os.getenv('TEST_DB'),
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='session')
 async def session_maker(
     postgres_config: PostgresConfig,
 ) -> async_sessionmaker[AsyncSession]:
-    database_uri = (
-        f"postgresql+psycopg://{postgres_config.user}:{postgres_config.password}@{postgres_config.host}:{postgres_config.port}/{postgres_config.database}"
-    )
+    database_uri = f'postgresql+psycopg://{postgres_config.user}:{postgres_config.password}@{postgres_config.host}:{postgres_config.port}/{postgres_config.database}'
     engine = create_async_engine(database_uri)
 
     async with engine.begin() as conn:
@@ -63,7 +62,6 @@ def mock_provider(session: AsyncSession) -> Provider:
             self, session_maker: async_sessionmaker[AsyncSession]
         ) -> AnyOf[AsyncSession]:
             return session
-
 
     return MockProvider()
 

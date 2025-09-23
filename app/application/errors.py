@@ -5,14 +5,14 @@ from dataclasses import dataclass
 class ApplicationError(Exception):
     @property
     def message(self) -> str:
-        return "Application error"
+        return 'Application error'
 
 
 @dataclass(eq=False)
 class EntityAlreadyExistsError(ApplicationError):
     @property
     def message(self) -> str:
-        return "Entity already exists"
+        return 'Entity already exists'
 
 
 @dataclass(eq=False)

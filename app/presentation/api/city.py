@@ -18,10 +18,10 @@ from app.application.interactors.city import (
 )
 from app.presentation.schemas.city import City
 
-city_router = APIRouter(prefix="/cities", tags=["cities"])
+city_router = APIRouter(prefix='/cities', tags=['cities'])
 
 
-@city_router.get("/get_cities")
+@city_router.get('/get_cities')
 @inject
 async def get_cities(
     interactor: FromDishka[GetCitiesInteractor],
@@ -29,8 +29,7 @@ async def get_cities(
     city_dms = await interactor()
     if not city_dms:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Cities not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail='Cities not found'
         )
 
     return [
@@ -45,7 +44,7 @@ async def get_cities(
     ]
 
 
-@city_router.get("/get_cities_by_district")
+@city_router.get('/get_cities_by_district')
 @inject
 async def get_cities_by_district_id(
     interactor: FromDishka[GetCitiesByDistrictIdInteractor],
@@ -55,7 +54,7 @@ async def get_cities_by_district_id(
     if not city_dms:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Cities not found for this district"
+            detail='Cities not found for this district',
         )
 
     return [
@@ -70,7 +69,7 @@ async def get_cities_by_district_id(
     ]
 
 
-@city_router.get("/get_city_by_id")
+@city_router.get('/get_city_by_id')
 @inject
 async def get_city_by_id(
     interactor: FromDishka[GetCityByIdInteractor],
@@ -79,8 +78,7 @@ async def get_city_by_id(
     city_dm = await interactor(city_id=city_id)
     if not city_dm:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="City not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail='City not found'
         )
 
     return City(
@@ -92,7 +90,7 @@ async def get_city_by_id(
     )
 
 
-@city_router.post("/create_city")
+@city_router.post('/create_city')
 @inject
 async def create_city(
     interactor: FromDishka[CreateCityInteractor],
@@ -103,12 +101,12 @@ async def create_city(
     except EntityNotExistsError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="District not found. Please check if this district exists"
+            detail='District not found. Please check if this district exists',
         )
     return city_id
 
 
-@city_router.delete("/delete_city")
+@city_router.delete('/delete_city')
 @inject
 async def delete_city(
     interactor: FromDishka[DeleteCityInteractor],
@@ -117,7 +115,7 @@ async def delete_city(
     await interactor(city_id=city_id)
 
 
-@city_router.put("/update_city")
+@city_router.put('/update_city')
 @inject
 async def update_city(
     interactor: FromDishka[UpdateCityInteractor],
@@ -126,9 +124,6 @@ async def update_city(
     try:
         city_id = await interactor(city_schema)
     except EntityNotExistsError as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=e.msg
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.msg)
 
     return city_id

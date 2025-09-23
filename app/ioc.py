@@ -80,12 +80,9 @@ class AppProvider(Provider):
     create_region_interactor = provide(CreateRegionInteractor, scope=Scope.REQUEST)
     delete_region_interactor = provide(DeleteRegionInteractor, scope=Scope.REQUEST)
 
-    region_grpc_service = provide(
-        RegionService,
-        scope=Scope.REQUEST
-    )
+    region_grpc_service = provide(RegionService, scope=Scope.REQUEST)
 
-    #district
+    # district
     district_gateway = provide(
         DistrictGateway,
         scope=Scope.REQUEST,
@@ -93,19 +90,25 @@ class AppProvider(Provider):
     )
 
     get_districts_interactor = provide(GetDistrictsInteractor, scope=Scope.REQUEST)
-    get_districts_by_region_id_interactor = provide(GetDistrictsByRegionIdInteractor, scope=Scope.REQUEST)
-    get_district_by_id_interactor = provide(GetDistrictByIdInteractor, scope=Scope.REQUEST)
+    get_districts_by_region_id_interactor = provide(
+        GetDistrictsByRegionIdInteractor, scope=Scope.REQUEST
+    )
+    get_district_by_id_interactor = provide(
+        GetDistrictByIdInteractor, scope=Scope.REQUEST
+    )
     create_district_interactor = provide(CreateDistrictInteractor, scope=Scope.REQUEST)
     delete_district_interactor = provide(DeleteDistrictInteractor, scope=Scope.REQUEST)
 
-    #city
+    # city
     city_gateway = provide(
         CityGateway,
         scope=Scope.REQUEST,
         provides=AnyOf[CitySaver, CityReader, CityDeleter, CityUpdater],
     )
     get_cities_interactor = provide(GetCitiesInteractor, scope=Scope.REQUEST)
-    get_cities_by_district_id_interactor = provide(GetCitiesByDistrictIdInteractor, scope=Scope.REQUEST)
+    get_cities_by_district_id_interactor = provide(
+        GetCitiesByDistrictIdInteractor, scope=Scope.REQUEST
+    )
     get_city_by_id_interactor = provide(GetCityByIdInteractor, scope=Scope.REQUEST)
     create_city_interactor = provide(CreateCityInteractor, scope=Scope.REQUEST)
     delete_city_interactor = provide(DeleteCityInteractor, scope=Scope.REQUEST)

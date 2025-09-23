@@ -27,6 +27,7 @@ def get_regions_interactor() -> GetRegionsInteractor:
     region_gateway = create_autospec(RegionReader)
     return GetRegionsInteractor(region_gateway)
 
+
 async def test_get_regions(get_regions_interactor: GetRegionsInteractor) -> None:
     result = await get_regions_interactor()
     get_regions_interactor._region_gateway.get_regions.assert_awaited_once_with()
@@ -39,10 +40,14 @@ def get_region_by_uuid() -> GetRegionByIdInteractor:
     return GetRegionByIdInteractor(region_gateway)
 
 
-@pytest.mark.parametrize("region_id", [uuid.uuid4()])
-async def test_get_region_by_uuid(get_region_by_uuid: GetRegionByIdInteractor, region_id: uuid.UUID):
+@pytest.mark.parametrize('region_id', [uuid.uuid4()])
+async def test_get_region_by_uuid(
+    get_region_by_uuid: GetRegionByIdInteractor, region_id: uuid.UUID
+):
     result = await get_region_by_uuid(region_id=region_id)
-    get_region_by_uuid._region_gateway.get_by_uuid.assert_awaited_once_with(region_id=region_id)
+    get_region_by_uuid._region_gateway.get_by_uuid.assert_awaited_once_with(
+        region_id=region_id
+    )
     assert result == get_region_by_uuid._region_gateway.get_by_uuid.return_value
 
 
@@ -53,11 +58,10 @@ def create_region(faker: Faker) -> CreateRegionInteractor:
     return CreateRegionInteractor(region_gateway, uuid_generator)
 
 
-async def test_create_region(create_region: CreateRegionInteractor, faker: Faker) -> None:
-    dto = NewRegionDTO(
-        name=f'test_{uuid4()}',
-        capital=faker.pystr()
-    )
+async def test_create_region(
+    create_region: CreateRegionInteractor, faker: Faker
+) -> None:
+    dto = NewRegionDTO(name=f'test_{uuid4()}', capital=faker.pystr())
 
     create_region._region_gateway.exist_with_name = AsyncMock(return_value=False)
 
@@ -66,21 +70,16 @@ async def test_create_region(create_region: CreateRegionInteractor, faker: Faker
     uuid = create_region._uuid_generator()
 
     create_region._region_gateway.save.assert_awaited_with(
-        RegionDM(
-            id=uuid,
-            name=dto.name,
-            capital=dto.capital
-        )
+        RegionDM(id=uuid, name=dto.name, capital=dto.capital)
     )
 
     assert result == uuid
 
 
-async def test_create_same_regions(create_region: CreateRegionInteractor, faker: Faker) -> None:
-    dto = NewRegionDTO(
-        name=faker.pystr(),
-        capital=faker.pystr()
-    )
+async def test_create_same_regions(
+    create_region: CreateRegionInteractor, faker: Faker
+) -> None:
+    dto = NewRegionDTO(name=faker.pystr(), capital=faker.pystr())
 
     create_region._region_gateway.exist_with_name = AsyncMock(return_value=False)
 
@@ -89,11 +88,7 @@ async def test_create_same_regions(create_region: CreateRegionInteractor, faker:
     uuid = create_region._uuid_generator()
 
     create_region._region_gateway.save.assert_awaited_with(
-        RegionDM(
-            id=uuid,
-            name=dto.name,
-            capital=dto.capital
-        )
+        RegionDM(id=uuid, name=dto.name, capital=dto.capital)
     )
 
     assert result == uuid
@@ -105,10 +100,12 @@ def delete_region() -> DeleteRegionInteractor:
     return DeleteRegionInteractor(region_gateway)
 
 
-@pytest.mark.parametrize("region_id", [uuid.uuid4()])
-async def test_delete_region(delete_region: DeleteRegionInteractor, region_id: uuid.UUID):
+@pytest.mark.parametrize('region_id', [uuid.uuid4()])
+async def test_delete_region(
+    delete_region: DeleteRegionInteractor, region_id: uuid.UUID
+):
     result = await delete_region(region_id=region_id)
-    delete_region._region_gateway.delete_by_uuid.assert_awaited_once_with(region_id=region_id)
+    delete_region._region_gateway.delete_by_uuid.assert_awaited_once_with(
+        region_id=region_id
+    )
     assert result is None
-
-

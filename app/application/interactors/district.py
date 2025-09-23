@@ -42,16 +42,13 @@ class CreateDistrictInteractor:
         self._district_gateway = district_gateway
         self._region_gateway = region_gateway
 
-
     async def __call__(self, district_dto: NewDistrictDTO) -> UUID:
         if await self._region_gateway.get_by_uuid(district_dto.region_id) is None:
             raise EntityNotExistsError
 
         district_id = uuid.uuid4()
         district = DistrictDM(
-            id=district_id,
-            region_id=district_dto.region_id,
-            name=district_dto.name
+            id=district_id, region_id=district_dto.region_id, name=district_dto.name
         )
 
         await self._district_gateway.save(district)

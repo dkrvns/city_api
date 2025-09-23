@@ -48,7 +48,7 @@ class RegionGRPCService(RegionServiceServicer):
     ) -> region_pb2.Region:
         region_dm = await interactor(region_id=uuid.UUID(request.region_id))
         if not region_dm:
-            await context.abort(grpc.StatusCode.NOT_FOUND, "Region not found")
+            await context.abort(grpc.StatusCode.NOT_FOUND, 'Region not found')
 
         return region_pb2.Region(
             id=str(region_dm.id),
@@ -64,18 +64,13 @@ class RegionGRPCService(RegionServiceServicer):
         interactor: FromDishka[CreateRegionInteractor],
     ) -> region_pb2.RegionIdResponse | None:
         try:
-            region_uuid = await interactor(NewRegionDTO(
-                request.name,
-                request.capital
-            ))
+            region_uuid = await interactor(NewRegionDTO(request.name, request.capital))
 
-            return region_pb2.RegionIdResponse(
-                region_id=str(region_uuid)
-            )
+            return region_pb2.RegionIdResponse(region_id=str(region_uuid))
         except EntityAlreadyExistsError:
             await context.abort(
                 grpc.StatusCode.ALREADY_EXISTS,
-                f"Region with name {request.name} already exists"
+                f'Region with name {request.name} already exists',
             )
 
     @inject

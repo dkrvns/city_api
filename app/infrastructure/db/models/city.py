@@ -4,7 +4,7 @@ from app.infrastructure.db.models.base import BaseModel
 
 
 class City(BaseModel):
-    __tablename__ = "city"
+    __tablename__ = 'city'
 
     id = Column(Uuid, primary_key=True)
     district_id = Column(Uuid)

@@ -16,19 +16,13 @@ async def region_gateway(session: AsyncSession) -> RegionGateway:
 
 
 async def test_create_region(
-    session: AsyncSession,
-    region_gateway: RegionGateway,
-    faker: Faker
+    session: AsyncSession, region_gateway: RegionGateway, faker: Faker
 ) -> None:
     uuid = faker.uuid4()
     name = faker.pystr()
     capital = faker.pystr()
 
-    stmt = insert(Region).values(
-        id=uuid,
-        name=name,
-        capital=capital
-    )
+    stmt = insert(Region).values(id=uuid, name=name, capital=capital)
 
     await session.execute(stmt)
 
@@ -38,9 +32,7 @@ async def test_create_region(
 
 
 async def test_save_region(
-    session: AsyncSession,
-    region_gateway: RegionGateway,
-    faker: Faker
+    session: AsyncSession, region_gateway: RegionGateway, faker: Faker
 ) -> None:
     region = RegionDM(
         id=faker.uuid4(),
@@ -56,9 +48,7 @@ async def test_save_region(
 
 
 async def test_create_few_regions(
-    session: AsyncSession,
-    region_gateway: RegionGateway,
-    faker: Faker
+    session: AsyncSession, region_gateway: RegionGateway, faker: Faker
 ) -> None:
     region_first = RegionDM(
         id=faker.uuid4(),
@@ -80,19 +70,13 @@ async def test_create_few_regions(
 
 
 async def test_delete_region(
-    session: AsyncSession,
-    region_gateway: RegionGateway,
-    faker: Faker
+    session: AsyncSession, region_gateway: RegionGateway, faker: Faker
 ) -> None:
     uuid = faker.uuid4()
     name = faker.pystr()
     capital = faker.pystr()
 
-    stmt = insert(Region).values(
-        id=uuid,
-        name=name,
-        capital=capital
-    )
+    stmt = insert(Region).values(id=uuid, name=name, capital=capital)
 
     await session.execute(stmt)
 
