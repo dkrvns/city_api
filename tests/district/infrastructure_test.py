@@ -1,6 +1,6 @@
 import pytest
 from faker import Faker
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.entities.district import DistrictDM
@@ -119,4 +119,9 @@ async def test_delete_district(
     await district_gateway.delete_by_uuid(uuid)
     result = await district_gateway.get_by_uuid(uuid)
 
+    query = select(District).where(District.id == uuid)
+    row = (await session.execute(query)).scalar_one_or_none()
+
     assert result is None
+    assert row is not None
+    assert row.is_deleted is True
