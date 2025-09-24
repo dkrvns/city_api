@@ -6,10 +6,10 @@ from dishka.integrations.grpcio import inject
 from google.protobuf.empty_pb2 import Empty
 from grpc.aio import ServicerContext
 
+from app.application.commands.city import CreateCityCommand
 from app.application.dto.city import NewCityDTO
 from app.application.errors import EntityNotExistsError
 from app.application.interactors.city import (
-    CreateCityInteractor,
     DeleteCityInteractor,
     GetCitiesByDistrictIdInteractor,
     GetCitiesInteractor,
@@ -84,7 +84,7 @@ class CityGRPCService(CityServiceServicer):
         self,
         request: city_pb2.NewCityDTO,
         context: ServicerContext,
-        interactor: FromDishka[CreateCityInteractor],
+        interactor: FromDishka[CreateCityCommand],
     ) -> city_pb2.CityIdResponse:
         try:
             city_uuid = await interactor(

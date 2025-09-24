@@ -69,7 +69,6 @@ class CityGateway(CitySaver, CityReader, CityDeleter, CityUpdater):
         await self._session.commit()
 
     async def update_by_uuid(self, city: CityDM) -> None:
-        print('!@#!@#!3', city.__dict__)
         stmt = update(City).where(and_(City.id == city.id)).values(**city.__dict__)
         await self._session.execute(stmt)
         await self._session.commit()

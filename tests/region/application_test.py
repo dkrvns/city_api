@@ -5,9 +5,9 @@ from uuid import uuid4
 import pytest
 from faker import Faker
 
+from app.application.commands.region import CreateRegionCommand
 from app.application.dto.region import NewRegionDTO
 from app.application.interactors.region import (
-    CreateRegionInteractor,
     DeleteRegionInteractor,
     GetRegionByIdInteractor,
     GetRegionsInteractor,
@@ -52,15 +52,13 @@ async def test_get_region_by_uuid(
 
 
 @pytest.fixture
-def create_region(faker: Faker) -> CreateRegionInteractor:
+def create_region(faker: Faker) -> CreateRegionCommand:
     region_gateway = create_autospec(RegionSaver)
     uuid_generator = MagicMock(return_value=faker.uuid4())
-    return CreateRegionInteractor(region_gateway, uuid_generator)
+    return CreateRegionCommand(region_gateway, uuid_generator)
 
 
-async def test_create_region(
-    create_region: CreateRegionInteractor, faker: Faker
-) -> None:
+async def test_create_region(create_region: CreateRegionCommand, faker: Faker) -> None:
     dto = NewRegionDTO(name=f'test_{uuid4()}', capital=faker.pystr())
 
     create_region._region_gateway.exist_with_name = AsyncMock(return_value=False)
@@ -77,7 +75,7 @@ async def test_create_region(
 
 
 async def test_create_same_regions(
-    create_region: CreateRegionInteractor, faker: Faker
+    create_region: CreateRegionCommand, faker: Faker
 ) -> None:
     dto = NewRegionDTO(name=faker.pystr(), capital=faker.pystr())
 

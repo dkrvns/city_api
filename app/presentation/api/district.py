@@ -6,10 +6,10 @@ from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, HTTPException
 from starlette import status
 
+from app.application.commands.district import CreateDistrictCommand
 from app.application.dto.district import NewDistrictDTO
 from app.application.errors import EntityNotExistsError
 from app.application.interactors.district import (
-    CreateDistrictInteractor,
     DeleteDistrictInteractor,
     GetDistrictByIdInteractor,
     GetDistrictsByRegionIdInteractor,
@@ -85,7 +85,7 @@ async def get_district_by_id(
 @district_router.post('/create_district')
 @inject
 async def create_district(
-    interactor: FromDishka[CreateDistrictInteractor],
+    interactor: FromDishka[CreateDistrictCommand],
     district_schema: NewDistrictDTO,
 ) -> UUID:
     try:

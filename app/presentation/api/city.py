@@ -6,15 +6,14 @@ from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, HTTPException
 from starlette import status
 
+from app.application.commands.city import CreateCityCommand, UpdateCityCommand
 from app.application.dto.city import NewCityDTO, UpdatedCityDTO
 from app.application.errors import EntityNotExistsError
 from app.application.interactors.city import (
-    CreateCityInteractor,
     DeleteCityInteractor,
     GetCitiesByDistrictIdInteractor,
     GetCitiesInteractor,
     GetCityByIdInteractor,
-    UpdateCityInteractor,
 )
 from app.presentation.schemas.city import City
 
@@ -93,7 +92,7 @@ async def get_city_by_id(
 @city_router.post('/create_city')
 @inject
 async def create_city(
-    interactor: FromDishka[CreateCityInteractor],
+    interactor: FromDishka[CreateCityCommand],
     city_schema: NewCityDTO,
 ) -> UUID:
     try:
@@ -118,7 +117,7 @@ async def delete_city(
 @city_router.put('/update_city')
 @inject
 async def update_city(
-    interactor: FromDishka[UpdateCityInteractor],
+    interactor: FromDishka[UpdateCityCommand],
     city_schema: UpdatedCityDTO,
 ) -> UUID:
     try:

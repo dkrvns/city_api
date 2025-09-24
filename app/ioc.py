@@ -4,23 +4,22 @@ from uuid import uuid4
 from dishka import AnyOf, Provider, Scope, from_context, provide
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.application.commands.city import CreateCityCommand, UpdateCityCommand
+from app.application.commands.district import CreateDistrictCommand
+from app.application.commands.region import CreateRegionCommand
 from app.application.interactors.city import (
-    CreateCityInteractor,
     DeleteCityInteractor,
     GetCitiesByDistrictIdInteractor,
     GetCitiesInteractor,
     GetCityByIdInteractor,
-    UpdateCityInteractor,
 )
 from app.application.interactors.district import (
-    CreateDistrictInteractor,
     DeleteDistrictInteractor,
     GetDistrictByIdInteractor,
     GetDistrictsByRegionIdInteractor,
     GetDistrictsInteractor,
 )
 from app.application.interactors.region import (
-    CreateRegionInteractor,
     DeleteRegionInteractor,
     GetRegionByIdInteractor,
     GetRegionsInteractor,
@@ -77,7 +76,7 @@ class AppProvider(Provider):
 
     get_region_interactor = provide(GetRegionByIdInteractor, scope=Scope.REQUEST)
     get_regions_interactor = provide(GetRegionsInteractor, scope=Scope.REQUEST)
-    create_region_interactor = provide(CreateRegionInteractor, scope=Scope.REQUEST)
+    create_region_interactor = provide(CreateRegionCommand, scope=Scope.REQUEST)
     delete_region_interactor = provide(DeleteRegionInteractor, scope=Scope.REQUEST)
 
     region_grpc_service = provide(RegionService, scope=Scope.REQUEST)
@@ -96,7 +95,7 @@ class AppProvider(Provider):
     get_district_by_id_interactor = provide(
         GetDistrictByIdInteractor, scope=Scope.REQUEST
     )
-    create_district_interactor = provide(CreateDistrictInteractor, scope=Scope.REQUEST)
+    create_district_interactor = provide(CreateDistrictCommand, scope=Scope.REQUEST)
     delete_district_interactor = provide(DeleteDistrictInteractor, scope=Scope.REQUEST)
 
     # city
@@ -110,6 +109,6 @@ class AppProvider(Provider):
         GetCitiesByDistrictIdInteractor, scope=Scope.REQUEST
     )
     get_city_by_id_interactor = provide(GetCityByIdInteractor, scope=Scope.REQUEST)
-    create_city_interactor = provide(CreateCityInteractor, scope=Scope.REQUEST)
+    create_city_interactor = provide(CreateCityCommand, scope=Scope.REQUEST)
     delete_city_interactor = provide(DeleteCityInteractor, scope=Scope.REQUEST)
-    update_city_interactor = provide(UpdateCityInteractor, scope=Scope.REQUEST)
+    update_city_interactor = provide(UpdateCityCommand, scope=Scope.REQUEST)
