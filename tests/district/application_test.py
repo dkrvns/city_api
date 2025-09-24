@@ -4,10 +4,10 @@ from unittest.mock import AsyncMock, MagicMock, create_autospec
 import pytest
 from faker import Faker
 
+from app.application.commands.district import CreateDistrictCommand
 from app.application.dto.district import NewDistrictDTO
 from app.application.errors import EntityNotExistsError
 from app.application.interactors.district import (
-    CreateDistrictInteractor,
     DeleteDistrictInteractor,
     GetDistrictByIdInteractor,
     GetDistrictsByRegionIdInteractor,
@@ -74,15 +74,15 @@ async def test_get_district_by_uuid(
 
 
 @pytest.fixture
-def create_district(faker: Faker) -> CreateDistrictInteractor:
+def create_district(faker: Faker) -> CreateDistrictCommand:
     district_gateway = create_autospec(DistrictSaver)
     region_gateway = create_autospec(RegionReader)
     uuid_generator = MagicMock(return_value=faker.uuid4())
-    return CreateDistrictInteractor(district_gateway, region_gateway, uuid_generator)
+    return CreateDistrictCommand(district_gateway, region_gateway, uuid_generator)
 
 
 async def test_create_district_success(
-    create_district: CreateDistrictInteractor, faker: Faker
+    create_district: CreateDistrictCommand, faker: Faker
 ) -> None:
     region_id = create_district._uuid_generator()
     dto = NewDistrictDTO(name=f'test_district_{uuid.uuid4()}', region_id=region_id)
@@ -100,7 +100,7 @@ async def test_create_district_success(
 
 
 async def test_create_district_region_not_exists(
-    create_district: CreateDistrictInteractor, faker: Faker
+    create_district: CreateDistrictCommand, faker: Faker
 ) -> None:
     dto = NewDistrictDTO(name=f'test_district_{uuid.uuid4()}', region_id=uuid.uuid4())
 

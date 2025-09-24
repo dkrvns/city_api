@@ -6,10 +6,10 @@ from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, HTTPException
 
+from app.application.commands.region import CreateRegionCommand
 from app.application.dto.region import NewRegionDTO
 from app.application.errors import EntityAlreadyExistsError
 from app.application.interactors.region import (
-    CreateRegionInteractor,
     DeleteRegionInteractor,
     GetRegionByIdInteractor,
     GetRegionsInteractor,
@@ -61,7 +61,7 @@ async def get_by_id(
 @region_router.post('/create_region')
 @inject
 async def create_region(
-    interactor: FromDishka[CreateRegionInteractor], region_schema: NewRegionDTO
+    interactor: FromDishka[CreateRegionCommand], region_schema: NewRegionDTO
 ) -> uuid.UUID:
     try:
         region_uuid = await interactor(region_schema)

@@ -6,10 +6,10 @@ from dishka.integrations.grpcio import inject
 from google.protobuf.empty_pb2 import Empty
 from grpc.aio import ServicerContext
 
+from app.application.commands.district import CreateDistrictCommand
 from app.application.dto.district import NewDistrictDTO
 from app.application.errors import EntityNotExistsError
 from app.application.interactors.district import (
-    CreateDistrictInteractor,
     DeleteDistrictInteractor,
     GetDistrictByIdInteractor,
     GetDistrictsByRegionIdInteractor,
@@ -78,7 +78,7 @@ class DistrictGRPCService(DistrictServiceServicer):
         self,
         request: district_pb2.NewDistrictDTO,
         context: ServicerContext,
-        interactor: FromDishka[CreateDistrictInteractor],
+        interactor: FromDishka[CreateDistrictCommand],
     ) -> district_pb2.DistrictIdResponse | None:
         try:
             district_uuid = await interactor(

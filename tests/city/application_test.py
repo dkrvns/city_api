@@ -4,15 +4,14 @@ from unittest.mock import AsyncMock, MagicMock, create_autospec
 import pytest
 from faker import Faker
 
+from app.application.commands.city import CreateCityCommand, UpdateCityCommand
 from app.application.dto.city import NewCityDTO, UpdatedCityDTO
 from app.application.errors import EntityNotExistsError
 from app.application.interactors.city import (
-    CreateCityInteractor,
     DeleteCityInteractor,
     GetCitiesByDistrictIdInteractor,
     GetCitiesInteractor,
     GetCityByIdInteractor,
-    UpdateCityInteractor,
 )
 from app.application.interface.city.city import (
     CityDeleter,
@@ -72,15 +71,15 @@ async def test_get_city_by_uuid(
 
 
 @pytest.fixture
-def create_city(faker: Faker) -> CreateCityInteractor:
+def create_city(faker: Faker) -> CreateCityCommand:
     city_gateway = create_autospec(CitySaver)
     district_gateway = create_autospec(DistrictReader)
     uuid_generator = MagicMock()
-    return CreateCityInteractor(city_gateway, district_gateway, uuid_generator)
+    return CreateCityCommand(city_gateway, district_gateway, uuid_generator)
 
 
 async def test_create_city_success(
-    create_city: CreateCityInteractor, faker: Faker
+    create_city: CreateCityCommand, faker: Faker
 ) -> None:
     city_id = uuid.uuid4()
     district_id = uuid.uuid4()
@@ -111,7 +110,7 @@ async def test_create_city_success(
 
 
 async def test_create_city_district_not_exists(
-    create_city: CreateCityInteractor, faker: Faker
+    create_city: CreateCityCommand, faker: Faker
 ) -> None:
     dto = NewCityDTO(
         district_id=uuid.uuid4(),
@@ -143,17 +142,15 @@ async def test_delete_city(delete_city: DeleteCityInteractor, city_id: uuid.UUID
 
 
 @pytest.fixture
-def update_city(faker: Faker) -> UpdateCityInteractor:
+def update_city(faker: Faker) -> UpdateCityCommand:
     city_read_gateway = create_autospec(CityReader)
     city_update_gateway = create_autospec(CityUpdater)
     district_gateway = create_autospec(DistrictReader)
-    return UpdateCityInteractor(
-        city_read_gateway, city_update_gateway, district_gateway
-    )
+    return UpdateCityCommand(city_read_gateway, city_update_gateway, district_gateway)
 
 
 async def test_update_city_success(
-    update_city: UpdateCityInteractor, faker: Faker
+    update_city: UpdateCityCommand, faker: Faker
 ) -> None:
     city_id = uuid.uuid4()
     district_id = uuid.uuid4()
@@ -187,7 +184,7 @@ async def test_update_city_success(
 
 
 async def test_update_city_district_not_exists(
-    update_city: UpdateCityInteractor, faker: Faker
+    update_city: UpdateCityCommand, faker: Faker
 ) -> None:
     dto = UpdatedCityDTO(
         city_id=uuid.uuid4(),
@@ -206,7 +203,7 @@ async def test_update_city_district_not_exists(
 
 
 async def test_update_city_not_exists(
-    update_city: UpdateCityInteractor, faker: Faker
+    update_city: UpdateCityCommand, faker: Faker
 ) -> None:
     dto = UpdatedCityDTO(
         city_id=uuid.uuid4(),

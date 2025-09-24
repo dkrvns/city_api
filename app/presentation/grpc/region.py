@@ -6,10 +6,10 @@ from dishka.integrations.grpcio import inject
 from google.protobuf.empty_pb2 import Empty
 from grpc.aio import ServicerContext
 
+from app.application.commands.region import CreateRegionCommand
 from app.application.dto.region import NewRegionDTO
 from app.application.errors import EntityAlreadyExistsError
 from app.application.interactors.region import (
-    CreateRegionInteractor,
     DeleteRegionInteractor,
     GetRegionByIdInteractor,
     GetRegionsInteractor,
@@ -61,7 +61,7 @@ class RegionGRPCService(RegionServiceServicer):
         self,
         request: region_pb2.NewRegionDTO,
         context: ServicerContext,
-        interactor: FromDishka[CreateRegionInteractor],
+        interactor: FromDishka[CreateRegionCommand],
     ) -> region_pb2.RegionIdResponse | None:
         try:
             region_uuid = await interactor(NewRegionDTO(request.name, request.capital))
