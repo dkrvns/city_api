@@ -25,7 +25,7 @@ class CityGRPCService(CityServiceServicer):
         self,
         request: Empty,
         context: ServicerContext,
-        interactor: FromDishka[GetCitiesInteractor]
+        interactor: FromDishka[GetCitiesInteractor],
     ) -> city_pb2.CityList:
         city_dms = await interactor()
         cities = [
@@ -45,7 +45,7 @@ class CityGRPCService(CityServiceServicer):
         self,
         request: city_pb2.DistrictIdRequest,
         context: ServicerContext,
-        interactor: FromDishka[GetCitiesByDistrictIdInteractor]
+        interactor: FromDishka[GetCitiesByDistrictIdInteractor],
     ) -> city_pb2.CityList:
         city_dms = await interactor(district_id=uuid.UUID(request.district_id))
         cities = [
@@ -65,11 +65,11 @@ class CityGRPCService(CityServiceServicer):
         self,
         request: city_pb2.CityIdRequest,
         context: ServicerContext,
-        interactor: FromDishka[GetCityByIdInteractor]
+        interactor: FromDishka[GetCityByIdInteractor],
     ) -> city_pb2.City:
         city_dm = await interactor(city_id=uuid.UUID(request.city_id))
         if not city_dm:
-            await context.abort(grpc.StatusCode.NOT_FOUND, "City not found")
+            await context.abort(grpc.StatusCode.NOT_FOUND, 'City not found')
 
         return city_pb2.City(
             id=str(city_dm.id),
@@ -84,15 +84,17 @@ class CityGRPCService(CityServiceServicer):
         self,
         request: city_pb2.NewCityDTO,
         context: ServicerContext,
-        interactor: FromDishka[CreateCityInteractor]
+        interactor: FromDishka[CreateCityInteractor],
     ) -> city_pb2.CityIdResponse:
         try:
-            city_uuid = await interactor(NewCityDTO(
-                district_id=uuid.UUID(request.district_id),
-                name=request.name,
-                obj_type=request.obj_type,
-                population=request.population
-            ))
+            city_uuid = await interactor(
+                NewCityDTO(
+                    district_id=uuid.UUID(request.district_id),
+                    name=request.name,
+                    obj_type=request.obj_type,
+                    population=request.population,
+                )
+            )
 
             return city_pb2.CityIdResponse(
                 city_id=str(city_uuid),
@@ -100,7 +102,7 @@ class CityGRPCService(CityServiceServicer):
         except EntityNotExistsError:
             await context.abort(
                 grpc.StatusCode.NOT_FOUND,
-                "District not found. Please check if this district exists"
+                'District not found. Please check if this district exists',
             )
 
     @inject

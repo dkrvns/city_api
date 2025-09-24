@@ -4,16 +4,14 @@ from app.config import PostgresConfig
 
 
 def new_session_maker(psql_config: PostgresConfig) -> async_sessionmaker[AsyncSession]:
-    database_uri = (
-        f"postgresql+psycopg://{psql_config.user}:{psql_config.password}@{psql_config.host}:{psql_config.port}/{psql_config.database}"
-    )
+    database_uri = f'postgresql+psycopg://{psql_config.user}:{psql_config.password}@{psql_config.host}:{psql_config.port}/{psql_config.database}'
 
     engine = create_async_engine(
         database_uri,
         pool_size=15,
         max_overflow=15,
         connect_args={
-            "connect_timeout": 5,
+            'connect_timeout': 5,
         },
     )
     return async_sessionmaker(

@@ -33,9 +33,7 @@ def get_fastapi_app() -> FastAPI:
     app.include_router(city_router)
 
     async_container = make_async_container(
-        AppProvider(),
-        FastapiProvider(),
-        context={Config: config}
+        AppProvider(), FastapiProvider(), context={Config: config}
     )
     setup_dishka(container=async_container, app=app)
 
@@ -45,7 +43,7 @@ def get_fastapi_app() -> FastAPI:
 async def run_api(app: FastAPI) -> None:
     config = uvicorn.Config(
         app,
-        host="127.0.0.1",
+        host='127.0.0.1',
         port=8000,
     )
     server = uvicorn.Server(config)
@@ -60,21 +58,19 @@ async def run_http_app():
 async def run_grpc_app():
     config = Config()
     container = make_async_container(
-        AppProvider(),
-        GrpcioProvider(),
-        context={Config: config}
+        AppProvider(), GrpcioProvider(), context={Config: config}
     )
 
     server = make_server(
         ThreadPoolExecutor(max_workers=10),
-        interceptors=[DishkaAioInterceptor(container)]
+        interceptors=[DishkaAioInterceptor(container)],
     )
 
     add_RegionServiceServicer_to_server(RegionGRPCService(), server)
     add_DistrictServiceServicer_to_server(DistrictGRPCService(), server)
     add_CityServiceServicer_to_server(CityGRPCService(), server)
 
-    server.add_insecure_port("[::]:50051")
+    server.add_insecure_port('[::]:50051')
 
     await server.start()
     await server.wait_for_termination()
