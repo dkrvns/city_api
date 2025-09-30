@@ -89,13 +89,3 @@ async def main(server_type: str) -> None:
         await run_http_app()
     elif server_type == 'GRPC':
         await run_grpc_app()
-
-
-"""
-Надо проверять рефреш токен по юзеру при запросе, для этого нужна какая-то типо сессия
-которая сходит в бд посмотрит токен, если он есть, обновит access token например и положит его в cookie
-https://github.com/ivan-borovets/fastapi-clean-example/blob/master/src/app/presentation/http/auth/adapters/session_transport_jwt_cookie.py
-
-тогда можно и нужно убрать из логина return токенов и не возвращать их фронту, они уже будут в куки
-+  это позволит избавиться от уебанской зависимость от конфига жвт в хендлерах
-"""
