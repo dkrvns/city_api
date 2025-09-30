@@ -14,7 +14,7 @@ class CreateCityCommand:
         city_gateway: CitySaver,
         district_gateway: DistrictReader,
         uuid_generator: UUIDGenerator,
-    ):
+    ) -> None:
         self._city_gateway = city_gateway
         self._district_gateway = district_gateway
         self._uuid_generator = uuid_generator
@@ -31,8 +31,8 @@ class CreateCityCommand:
             obj_type=city_dto.obj_type,
             population=city_dto.population,
         )
-
         await self._city_gateway.save(city)
+
         return city_id
 
 
@@ -42,12 +42,12 @@ class UpdateCityCommand:
         city_read_gateway: CityReader,
         city_update_gateway: CityUpdater,
         district_gateway: DistrictReader,
-    ):
+    ) -> None:
         self._city_read_gateway = city_read_gateway
         self._city_update_gateway = city_update_gateway
         self._district_gateway = district_gateway
 
-    async def __call__(self, city_dto: UpdatedCityDTO):
+    async def __call__(self, city_dto: UpdatedCityDTO) -> UUID:
         if await self._district_gateway.get_by_uuid(city_dto.district_id) is None:
             raise EntityNotExistsError('District does not exist')
 

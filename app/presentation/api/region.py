@@ -4,7 +4,7 @@ from http import HTTPStatus
 
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Security
 
 from app.application.commands.region import CreateRegionCommand
 from app.application.dto.region import NewRegionDTO
@@ -14,10 +14,11 @@ from app.application.interactors.region import (
     GetRegionByIdInteractor,
     GetRegionsInteractor,
 )
+from app.presentation.auth.fastapi_marker import cookie_scheme
 from app.presentation.schemas.region import Region
 
 region_router = APIRouter(
-    prefix='/region',
+    prefix='/region', tags=['region'], dependencies=[Security(cookie_scheme)]
 )
 
 

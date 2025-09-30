@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from dishka import AnyOf, Provider, Scope, from_context, provide
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from starlette.requests import Request
 
 from app.application.commands.city import CreateCityCommand, UpdateCityCommand
 from app.application.commands.district import CreateDistrictCommand
@@ -40,13 +41,34 @@ from app.application.interface.region.region import (
     RegionReader,
     RegionSaver,
 )
+from app.application.interface.user.user import UserDeleter, UserReader, UserSaver
 from app.application.interface.uuid_generator import UUIDGenerator
-from app.config import Config
+from app.config import AuthSettings, Config
+from app.domain.ports.jwt_encoder import JwtAccessTokenEncoder
+from app.domain.ports.password_hasher import PasswordHasher
+from app.domain.services.user import UserService
+from app.infrastructure.auth.adapter.jwt_access_token_jose import JWTAccessTokenJose
+from app.infrastructure.auth.adapter.password_hasher_bcrypt import BcryptPasswordHasher
+from app.infrastructure.auth.gateway.refresh_token import RefreshTokenGateway
+from app.infrastructure.auth.handler.log_in import LogInHandler
+from app.infrastructure.auth.handler.log_out import LogOutHandler
+from app.infrastructure.auth.handler.sign_up import SignUpHandler
+from app.infrastructure.auth.interface.auth_gateway import (
+    RefreshTokenDeleter,
+    RefreshTokenReader,
+    RefreshTokenSaver,
+)
+from app.infrastructure.auth.session.auth_session_transport import AuthTransport
+from app.infrastructure.db.gateway.city import CityGateway
+from app.infrastructure.db.gateway.district import DistrictGateway
+from app.infrastructure.db.gateway.region import RegionGateway
+from app.infrastructure.db.gateway.user import UserGateway
 from app.infrastructure.db.main import new_session_maker
-from app.infrastructure.gateway.city import CityGateway
-from app.infrastructure.gateway.district import DistrictGateway
-from app.infrastructure.gateway.region import RegionGateway
 from app.infrastructure.grpc.region.region_pb2_grpc import RegionService
+from app.presentation.auth.adapters.jwt_cookie_auth_transport import (
+    JWTCookieAuthTransport,
+)
+from app.presentation.auth.cookie import CookieParams
 
 
 class AppProvider(Provider):
@@ -112,3 +134,44 @@ class AppProvider(Provider):
     create_city_interactor = provide(CreateCityCommand, scope=Scope.REQUEST)
     delete_city_interactor = provide(DeleteCityInteractor, scope=Scope.REQUEST)
     update_city_interactor = provide(UpdateCityCommand, scope=Scope.REQUEST)
+
+    # auth
+    @provide(scope=Scope.APP)
+    def provide_jwt_config(self, config: Config) -> AuthSettings:
+        return config.auth_settings
+
+    @provide(scope=Scope.APP)
+    def provide_cookie_config(self) -> CookieParams:
+        return CookieParams(secure=True)
+
+    user_gateway = provide(
+        UserGateway,
+        scope=Scope.REQUEST,
+        provides=AnyOf[UserSaver, UserReader, UserDeleter],
+    )
+
+    refresh_token_gateway = provide(
+        RefreshTokenGateway,
+        scope=Scope.REQUEST,
+        provides=AnyOf[RefreshTokenReader, RefreshTokenSaver, RefreshTokenDeleter],
+    )
+
+    jwt_access_token_encoder = provide(
+        JWTAccessTokenJose, scope=Scope.REQUEST, provides=JwtAccessTokenEncoder
+    )
+
+    jwt_cookie_auth_transport = provide(
+        JWTCookieAuthTransport, scope=Scope.REQUEST, provides=AuthTransport
+    )
+
+    password_hasher = provide(
+        BcryptPasswordHasher, scope=Scope.REQUEST, provides=PasswordHasher
+    )
+
+    user_service = provide(UserService, scope=Scope.REQUEST)
+
+    request = from_context(scope=Scope.REQUEST, provides=Request)
+
+    log_in_handler = provide(LogInHandler, scope=Scope.REQUEST)
+    log_out_handler = provide(LogOutHandler, scope=Scope.REQUEST)
+    sign_up_handler = provide(SignUpHandler, scope=Scope.REQUEST)

@@ -16,9 +16,13 @@ from app.infrastructure.grpc.region.region_pb2_grpc import (
     add_RegionServiceServicer_to_server,
 )
 from app.ioc import AppProvider
+from app.presentation.api.auth.log_in import log_in_router
+from app.presentation.api.auth.log_out import log_out_router
+from app.presentation.api.auth.sign_up import sign_up_router
 from app.presentation.api.city import city_router
 from app.presentation.api.district import district_router
 from app.presentation.api.region import region_router
+from app.presentation.auth.asgi_middleware import ASGIAuthMiddleware
 from app.presentation.grpc.city import CityGRPCService
 from app.presentation.grpc.district import DistrictGRPCService
 from app.presentation.grpc.region import RegionGRPCService
@@ -28,9 +32,13 @@ def get_fastapi_app() -> FastAPI:
     config = Config()
     app = FastAPI()
 
+    app.include_router(log_in_router)
+    app.include_router(sign_up_router)
+    app.include_router(log_out_router)
     app.include_router(region_router)
     app.include_router(district_router)
     app.include_router(city_router)
+    app.add_middleware(ASGIAuthMiddleware)
 
     async_container = make_async_container(
         AppProvider(), FastapiProvider(), context={Config: config}
@@ -81,3 +89,13 @@ async def main(server_type: str) -> None:
         await run_http_app()
     elif server_type == 'GRPC':
         await run_grpc_app()
+
+
+"""
+Надо проверять рефреш токен по юзеру при запросе, для этого нужна какая-то типо сессия
+которая сходит в бд посмотрит токен, если он есть, обновит access token например и положит его в cookie
+https://github.com/ivan-borovets/fastapi-clean-example/blob/master/src/app/presentation/http/auth/adapters/session_transport_jwt_cookie.py
+
+тогда можно и нужно убрать из логина return токенов и не возвращать их фронту, они уже будут в куки
++  это позволит избавиться от уебанской зависимость от конфига жвт в хендлерах
+"""

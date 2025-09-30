@@ -4,8 +4,8 @@ from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.entities.region import RegionDM
+from app.infrastructure.db.gateway.region import RegionGateway
 from app.infrastructure.db.models import Region
-from app.infrastructure.gateway.region import RegionGateway
 
 pytestmark = pytest.mark.asyncio
 

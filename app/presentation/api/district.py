@@ -3,7 +3,7 @@ from uuid import UUID
 
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Security
 from starlette import status
 
 from app.application.commands.district import CreateDistrictCommand
@@ -15,9 +15,12 @@ from app.application.interactors.district import (
     GetDistrictsByRegionIdInteractor,
     GetDistrictsInteractor,
 )
+from app.presentation.auth.fastapi_marker import cookie_scheme
 from app.presentation.schemas.district import District
 
-district_router = APIRouter(prefix='/districts', tags=['districts'])
+district_router = APIRouter(
+    prefix='/districts', tags=['districts'], dependencies=[Security(cookie_scheme)]
+)
 
 
 @district_router.get('/get_districts')

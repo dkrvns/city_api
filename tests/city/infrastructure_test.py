@@ -4,8 +4,8 @@ from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.entities.city import CityDM
+from app.infrastructure.db.gateway.city import CityGateway
 from app.infrastructure.db.models import City, District, Region
-from app.infrastructure.gateway.city import CityGateway
 
 pytestmark = pytest.mark.asyncio
 

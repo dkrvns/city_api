@@ -3,7 +3,7 @@ from uuid import UUID
 
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Security
 from starlette import status
 
 from app.application.commands.city import CreateCityCommand, UpdateCityCommand
@@ -15,9 +15,12 @@ from app.application.interactors.city import (
     GetCitiesInteractor,
     GetCityByIdInteractor,
 )
+from app.presentation.auth.fastapi_marker import cookie_scheme
 from app.presentation.schemas.city import City
 
-city_router = APIRouter(prefix='/cities', tags=['cities'])
+city_router = APIRouter(
+    prefix='/cities', tags=['cities'], dependencies=[Security(cookie_scheme)]
+)
 
 
 @city_router.get('/get_cities')
