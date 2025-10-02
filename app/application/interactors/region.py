@@ -5,6 +5,7 @@ from app.application.interface.region.region import (
     RegionDeleter,
     RegionReader,
 )
+from app.application.interface.transaction_manager import TransactionManager
 from app.domain.entities.region import RegionDM
 
 
@@ -25,8 +26,14 @@ class GetRegionByIdInteractor:
 
 
 class DeleteRegionInteractor:
-    def __init__(self, region_gateway: RegionDeleter):
+    def __init__(
+        self,
+        region_gateway: RegionDeleter,
+        transaction_manager: TransactionManager,
+    ):
         self._region_gateway = region_gateway
+        self._transaction_manager = transaction_manager
 
     async def __call__(self, region_id: uuid.UUID) -> None:
         await self._region_gateway.delete_by_uuid(region_id)
+        await self._transaction_manager.commit()

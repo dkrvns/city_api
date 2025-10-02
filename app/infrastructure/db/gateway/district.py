@@ -50,7 +50,6 @@ class DistrictGateway(DistrictSaver, DistrictReader, DistrictDeleter):
         )
 
         await self._session.execute(query)
-        await self._session.commit()
 
     async def delete_by_uuid(self, district_id: uuid.UUID) -> None:
         stmt = (
@@ -62,7 +61,6 @@ class DistrictGateway(DistrictSaver, DistrictReader, DistrictDeleter):
         )
 
         await self._session.execute(stmt)
-        await self._session.commit()
 
     @staticmethod
     def _map_row_to_read_model(row: District) -> DistrictDM:

@@ -41,7 +41,6 @@ class RegionGateway(RegionSaver, RegionReader, RegionDeleter):
         )
 
         await self._session.execute(query)
-        await self._session.commit()
 
     async def exist_with_name(self, region_name: str) -> bool:
         query = select(Region).where(
@@ -61,7 +60,6 @@ class RegionGateway(RegionSaver, RegionReader, RegionDeleter):
         )
 
         await self._session.execute(stmt)
-        await self._session.commit()
 
     @staticmethod
     def _map_row_to_read_model(row: Region) -> RegionDM:

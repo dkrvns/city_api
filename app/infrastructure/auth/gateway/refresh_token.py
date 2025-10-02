@@ -23,7 +23,6 @@ class RefreshTokenGateway(RefreshTokenSaver, RefreshTokenReader, RefreshTokenDel
         )
 
         await self._session.execute(query)
-        await self._session.commit()
 
     async def get_by_username(self, username: str) -> RefreshTokenDM | None:
         query = select(RefreshToken).where(and_(RefreshToken.username == username))
@@ -43,7 +42,6 @@ class RefreshTokenGateway(RefreshTokenSaver, RefreshTokenReader, RefreshTokenDel
         )
 
         await self._session.execute(query)
-        await self._session.commit()
 
     @staticmethod
     def _map_row_to_read_model(row: RefreshToken) -> RefreshTokenDM:

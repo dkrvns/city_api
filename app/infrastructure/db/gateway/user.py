@@ -20,7 +20,6 @@ class UserGateway(UserSaver, UserReader, UserDeleter):
         )
 
         await self._session.execute(stmt)
-        await self._session.commit()
 
         return user.id
 
@@ -49,7 +48,6 @@ class UserGateway(UserSaver, UserReader, UserDeleter):
     async def delete(self, user: UserDM) -> None:
         stmt = update(User).where(and_(User.id == user.id)).values(is_deleted=True)
         await self._session.execute(stmt)
-        await self._session.commit()
 
     @staticmethod
     def _map_row_to_read_model(row: User) -> UserDM:

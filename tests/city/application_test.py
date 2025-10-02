@@ -20,6 +20,7 @@ from app.application.interface.city.city import (
     CityUpdater,
 )
 from app.application.interface.district.district import DistrictReader
+from app.application.interface.transaction_manager import TransactionManager
 from app.domain.entities.city import CityDM
 
 
@@ -75,7 +76,10 @@ def create_city(faker: Faker) -> CreateCityCommand:
     city_gateway = create_autospec(CitySaver)
     district_gateway = create_autospec(DistrictReader)
     uuid_generator = MagicMock()
-    return CreateCityCommand(city_gateway, district_gateway, uuid_generator)
+    transaction_manager = create_autospec(TransactionManager)
+    return CreateCityCommand(
+        city_gateway, district_gateway, uuid_generator, transaction_manager
+    )
 
 
 async def test_create_city_success(
@@ -131,7 +135,8 @@ async def test_create_city_district_not_exists(
 @pytest.fixture
 def delete_city() -> DeleteCityInteractor:
     city_gateway = create_autospec(CityDeleter)
-    return DeleteCityInteractor(city_gateway)
+    transaction_manager = create_autospec(TransactionManager)
+    return DeleteCityInteractor(city_gateway, transaction_manager)
 
 
 @pytest.mark.parametrize('city_id', [uuid.uuid4(), uuid.uuid4()])
@@ -146,7 +151,10 @@ def update_city(faker: Faker) -> UpdateCityCommand:
     city_read_gateway = create_autospec(CityReader)
     city_update_gateway = create_autospec(CityUpdater)
     district_gateway = create_autospec(DistrictReader)
-    return UpdateCityCommand(city_read_gateway, city_update_gateway, district_gateway)
+    transaction_manager = create_autospec(TransactionManager)
+    return UpdateCityCommand(
+        city_read_gateway, city_update_gateway, district_gateway, transaction_manager
+    )
 
 
 async def test_update_city_success(

@@ -5,6 +5,7 @@ from app.application.interface.district.district import (
     DistrictDeleter,
     DistrictReader,
 )
+from app.application.interface.transaction_manager import TransactionManager
 from app.domain.entities.district import DistrictDM
 
 
@@ -33,8 +34,14 @@ class GetDistrictByIdInteractor:
 
 
 class DeleteDistrictInteractor:
-    def __init__(self, district_gateway: DistrictDeleter):
+    def __init__(
+        self,
+        district_gateway: DistrictDeleter,
+        transaction_manager: TransactionManager,
+    ):
         self._district_gateway = district_gateway
+        self._transaction_manager = transaction_manager
 
     async def __call__(self, district_id: UUID) -> None:
         await self._district_gateway.delete_by_uuid(district_id)
+        await self._transaction_manager.commit()

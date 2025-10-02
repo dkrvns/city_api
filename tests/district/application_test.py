@@ -19,6 +19,7 @@ from app.application.interface.district.district import (
     DistrictSaver,
 )
 from app.application.interface.region.region import RegionReader
+from app.application.interface.transaction_manager import TransactionManager
 from app.domain.entities.district import DistrictDM
 
 
@@ -78,7 +79,10 @@ def create_district(faker: Faker) -> CreateDistrictCommand:
     district_gateway = create_autospec(DistrictSaver)
     region_gateway = create_autospec(RegionReader)
     uuid_generator = MagicMock(return_value=faker.uuid4())
-    return CreateDistrictCommand(district_gateway, region_gateway, uuid_generator)
+    transaction_manager = create_autospec(TransactionManager)
+    return CreateDistrictCommand(
+        district_gateway, region_gateway, uuid_generator, transaction_manager
+    )
 
 
 async def test_create_district_success(
@@ -115,7 +119,8 @@ async def test_create_district_region_not_exists(
 @pytest.fixture
 def delete_district() -> DeleteDistrictInteractor:
     district_gateway = create_autospec(DistrictDeleter)
-    return DeleteDistrictInteractor(district_gateway)
+    transaction_manager = create_autospec(TransactionManager)
+    return DeleteDistrictInteractor(district_gateway, transaction_manager)
 
 
 @pytest.mark.parametrize('district_id', [uuid.uuid4(), uuid.uuid4()])

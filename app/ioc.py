@@ -41,6 +41,7 @@ from app.application.interface.region.region import (
     RegionReader,
     RegionSaver,
 )
+from app.application.interface.transaction_manager import TransactionManager
 from app.application.interface.user.user import UserDeleter, UserReader, UserSaver
 from app.application.interface.uuid_generator import UUIDGenerator
 from app.config import AuthSettings, Config
@@ -64,6 +65,7 @@ from app.infrastructure.db.gateway.district import DistrictGateway
 from app.infrastructure.db.gateway.region import RegionGateway
 from app.infrastructure.db.gateway.user import UserGateway
 from app.infrastructure.db.main import new_session_maker
+from app.infrastructure.db.transaction_manager import SqlAlchemyTransactionManager
 from app.infrastructure.grpc.region.region_pb2_grpc import RegionService
 from app.presentation.auth.adapters.jwt_cookie_auth_transport import (
     JWTCookieAuthTransport,
@@ -88,6 +90,10 @@ class AppProvider(Provider):
     ) -> AsyncGenerator[AsyncSession, None]:
         async with session_maker() as session:
             yield session
+
+    transaction_manager = provide(
+        SqlAlchemyTransactionManager, scope=Scope.REQUEST, provides=TransactionManager
+    )
 
     # region
     region_gateway = provide(

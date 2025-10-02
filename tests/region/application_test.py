@@ -17,6 +17,7 @@ from app.application.interface.region.region import (
     RegionReader,
     RegionSaver,
 )
+from app.application.interface.transaction_manager import TransactionManager
 from app.domain.entities.region import RegionDM
 
 pytestmark = pytest.mark.asyncio
@@ -55,7 +56,8 @@ async def test_get_region_by_uuid(
 def create_region(faker: Faker) -> CreateRegionCommand:
     region_gateway = create_autospec(RegionSaver)
     uuid_generator = MagicMock(return_value=faker.uuid4())
-    return CreateRegionCommand(region_gateway, uuid_generator)
+    transaction_manager = create_autospec(TransactionManager)
+    return CreateRegionCommand(region_gateway, uuid_generator, transaction_manager)
 
 
 async def test_create_region(create_region: CreateRegionCommand, faker: Faker) -> None:
@@ -95,7 +97,8 @@ async def test_create_same_regions(
 @pytest.fixture
 def delete_region() -> DeleteRegionInteractor:
     region_gateway = create_autospec(RegionDeleter)
-    return DeleteRegionInteractor(region_gateway)
+    transaction_manager = create_autospec(TransactionManager)
+    return DeleteRegionInteractor(region_gateway, transaction_manager)
 
 
 @pytest.mark.parametrize('region_id', [uuid.uuid4(), uuid.uuid4()])

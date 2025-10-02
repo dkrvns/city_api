@@ -3,14 +3,21 @@ import uuid
 from app.application.dto.region import NewRegionDTO
 from app.application.errors import EntityAlreadyExistsError
 from app.application.interface.region.region import RegionSaver
+from app.application.interface.transaction_manager import TransactionManager
 from app.application.interface.uuid_generator import UUIDGenerator
 from app.domain.entities.region import RegionDM
 
 
 class CreateRegionCommand:
-    def __init__(self, region_gateway: RegionSaver, uuid_generator: UUIDGenerator):
+    def __init__(
+        self,
+        region_gateway: RegionSaver,
+        uuid_generator: UUIDGenerator,
+        transaction_manager: TransactionManager,
+    ):
         self._region_gateway = region_gateway
         self._uuid_generator = uuid_generator
+        self._transaction_manager = transaction_manager
 
     async def __call__(self, region: NewRegionDTO) -> uuid:
         region_id = self._uuid_generator()
@@ -19,4 +26,5 @@ class CreateRegionCommand:
             raise EntityAlreadyExistsError
 
         await self._region_gateway.save(region)
+        await self._transaction_manager.commit()
         return region_id

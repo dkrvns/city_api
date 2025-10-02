@@ -5,6 +5,7 @@ from app.application.interface.city.city import (
     CityDeleter,
     CityReader,
 )
+from app.application.interface.transaction_manager import TransactionManager
 from app.domain.entities.city import CityDM
 
 
@@ -33,8 +34,12 @@ class GetCityByIdInteractor:
 
 
 class DeleteCityInteractor:
-    def __init__(self, city_gateway: CityDeleter):
+    def __init__(
+        self, city_gateway: CityDeleter, transaction_manager: TransactionManager
+    ):
         self._city_gateway = city_gateway
+        self._transaction_manager = transaction_manager
 
     async def __call__(self, city_id: UUID) -> None:
         await self._city_gateway.delete_by_uuid(city_id)
+        await self._transaction_manager.commit()

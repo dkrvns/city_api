@@ -54,7 +54,6 @@ class CityGateway(CitySaver, CityReader, CityDeleter, CityUpdater):
         )
 
         await self._session.execute(query)
-        await self._session.commit()
 
     async def delete_by_uuid(self, city_id: uuid.UUID) -> None:
         stmt = (
@@ -66,12 +65,10 @@ class CityGateway(CitySaver, CityReader, CityDeleter, CityUpdater):
         )
 
         await self._session.execute(stmt)
-        await self._session.commit()
 
     async def update_by_uuid(self, city: CityDM) -> None:
         stmt = update(City).where(and_(City.id == city.id)).values(**city.__dict__)
         await self._session.execute(stmt)
-        await self._session.commit()
 
     @staticmethod
     def _map_row_to_read_model(row: City) -> CityDM:
