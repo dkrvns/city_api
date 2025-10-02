@@ -1,36 +1,13 @@
 import uuid
-from collections.abc import AsyncIterator
 
-import pytest
-from dishka import AsyncContainer
-from dishka.integrations import fastapi as fastapi_integration
 from faker import Faker
-from fastapi import FastAPI
-from httpx import ASGITransport, AsyncClient
+from httpx import AsyncClient
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.dto.district import NewDistrictDTO
 from app.infrastructure.db.models import District as DistrictModel
 from app.infrastructure.db.models import Region
-from app.presentation.api.district import district_router
-
-
-@pytest.fixture
-async def http_app(container: AsyncContainer) -> FastAPI:
-    app = FastAPI()
-    app.include_router(district_router)
-
-    fastapi_integration.setup_dishka(container, app)
-    return app
-
-
-@pytest.fixture
-async def http_client(http_app: FastAPI) -> AsyncIterator[AsyncClient]:
-    async with AsyncClient(
-        transport=ASGITransport(app=http_app), base_url='http://test'
-    ) as client:
-        yield client
 
 
 async def test_get_districts(

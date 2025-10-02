@@ -1,16 +1,24 @@
+import datetime
 import os
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, AsyncIterator
 from typing import Any
 from unittest.mock import AsyncMock
 
+import jwt
 import pytest
 from dishka import AnyOf, AsyncContainer, Provider, Scope, make_async_container, provide
+from dishka.integrations import fastapi as fastapi_integration
 from dotenv import load_dotenv
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from app.config import Config, PostgresConfig
+from app.config import AuthSettings, Config, PostgresConfig
 from app.infrastructure.db.models import BaseModel
 from app.ioc import AppProvider
+from app.presentation.api.city import city_router
+from app.presentation.api.district import district_router
+from app.presentation.api.region import region_router
 
 pytestmark = pytest.mark.asyncio
 
@@ -74,3 +82,48 @@ def test_config(postgres_config: PostgresConfig) -> Config:
 @pytest.fixture
 def container(mock_provider: Provider, test_config) -> AsyncContainer:
     return make_async_container(mock_provider, context={Config: test_config})
+
+
+@pytest.fixture(scope='session')
+def jwt_config() -> AuthSettings:
+    return AuthSettings(
+        JWT_SECRET=os.getenv('JWT_SECRET'),
+        JWT_ALGORITHM=os.getenv('JWT_ALGORITHM'),
+        SESSION_TTL_MIN=int(os.getenv('SESSION_TTL_MIN')),
+        SESSION_REFRESH_EXPIRES=int(os.getenv('SESSION_REFRESH_EXPIRES')),
+    )
+
+
+@pytest.fixture
+def valid_access_token(jwt_config: AuthSettings):
+    payload = {
+        'sub': 'test_user',
+        'exp': datetime.datetime.now() + datetime.timedelta(minutes=15),
+    }
+    token = jwt.encode(
+        payload, jwt_config.jwt_secret, algorithm=jwt_config.jwt_algorithm
+    )
+    return token
+
+
+@pytest.fixture
+async def http_app(container: AsyncContainer) -> FastAPI:
+    app = FastAPI()
+    app.include_router(district_router)
+    app.include_router(region_router)
+    app.include_router(city_router)
+
+    fastapi_integration.setup_dishka(container, app)
+    return app
+
+
+@pytest.fixture
+async def http_client(
+    http_app: FastAPI, valid_access_token: str
+) -> AsyncIterator[AsyncClient]:
+    async with AsyncClient(
+        transport=ASGITransport(app=http_app),
+        base_url='http://test',
+        cookies={'access_token': valid_access_token},
+    ) as client:
+        yield client

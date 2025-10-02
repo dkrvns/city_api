@@ -1,36 +1,13 @@
 import uuid
-from collections.abc import AsyncIterator
 
-import pytest
-from dishka import AsyncContainer
-from dishka.integrations import fastapi as fastapi_integration
 from faker import Faker
-from fastapi import FastAPI
-from httpx import ASGITransport, AsyncClient
+from httpx import AsyncClient
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.dto.city import NewCityDTO, UpdatedCityDTO
 from app.infrastructure.db.models import City as CityModel
 from app.infrastructure.db.models import District, Region
-from app.presentation.api.city import city_router
-
-
-@pytest.fixture
-async def http_app(container: AsyncContainer) -> FastAPI:
-    app = FastAPI()
-    app.include_router(city_router)
-
-    fastapi_integration.setup_dishka(container, app)
-    return app
-
-
-@pytest.fixture
-async def http_client(http_app: FastAPI) -> AsyncIterator[AsyncClient]:
-    async with AsyncClient(
-        transport=ASGITransport(app=http_app), base_url='http://test'
-    ) as client:
-        yield client
 
 
 async def test_get_cities(
