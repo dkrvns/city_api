@@ -1,4 +1,3 @@
-import uuid
 from dataclasses import dataclass
 
 from app.application.interface.user.user import UserReader, UserSaver
@@ -24,7 +23,7 @@ class SignUpHandler:
         self._user_reader = user_reader
         self._user_saver = user_saver
 
-    async def __call__(self, request_data: SignUpRequest) -> uuid.UUID:
+    async def __call__(self, request_data: SignUpRequest) -> None:
         password = RawPassword(request_data.password)
 
         user = await self._user_service.create(request_data.email, password)
@@ -33,5 +32,3 @@ class SignUpHandler:
             raise UserAlreadyExistError('User with this login or email already exist')
 
         await self._user_saver.save(user)
-
-        return user.id
