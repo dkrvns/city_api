@@ -5,9 +5,9 @@ from httpx import AsyncClient
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.dto.city import NewCityDTO, UpdatedCityDTO
-from app.infrastructure.db.models import City as CityModel
-from app.infrastructure.db.models import District, Region
+from city_api.application.dto.city import NewCityDTO, UpdatedCityDTO
+from city_api.infrastructure.db.models import City as CityModel
+from city_api.infrastructure.db.models import District, Region
 
 
 async def test_get_cities(

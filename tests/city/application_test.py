@@ -4,24 +4,24 @@ from unittest.mock import AsyncMock, MagicMock, create_autospec
 import pytest
 from faker import Faker
 
-from app.application.commands.city import CreateCityCommand, UpdateCityCommand
-from app.application.dto.city import NewCityDTO, UpdatedCityDTO
-from app.application.errors import EntityNotExistsError
-from app.application.interactors.city import (
+from city_api.application.commands.city import CreateCityCommand, UpdateCityCommand
+from city_api.application.dto.city import NewCityDTO, UpdatedCityDTO
+from city_api.application.errors import EntityNotExistsError
+from city_api.application.interactors.city import (
     DeleteCityInteractor,
     GetCitiesByDistrictIdInteractor,
     GetCitiesInteractor,
     GetCityByIdInteractor,
 )
-from app.application.interface.city.city import (
+from city_api.application.interface.city.city import (
     CityDeleter,
     CityReader,
     CitySaver,
     CityUpdater,
 )
-from app.application.interface.district.district import DistrictReader
-from app.application.interface.transaction_manager import TransactionManager
-from app.domain.entities.city import CityDM
+from city_api.application.interface.district.district import DistrictReader
+from city_api.application.interface.transaction_manager import TransactionManager
+from city_api.domain.entities.city import CityDM
 
 
 @pytest.fixture

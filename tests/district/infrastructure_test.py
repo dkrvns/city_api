@@ -3,10 +3,10 @@ from faker import Faker
 from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.entities.district import DistrictDM
-from app.infrastructure.db.gateway.district import DistrictGateway
-from app.infrastructure.db.gateway.region import RegionGateway
-from app.infrastructure.db.models import District, Region
+from city_api.domain.entities.district import DistrictDM
+from city_api.infrastructure.db.gateway.district import DistrictGateway
+from city_api.infrastructure.db.gateway.region import RegionGateway
+from city_api.infrastructure.db.models import District, Region
 
 pytestmark = pytest.mark.asyncio
 

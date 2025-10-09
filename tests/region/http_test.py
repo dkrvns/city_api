@@ -5,8 +5,8 @@ from httpx import AsyncClient
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.dto.region import NewRegionDTO
-from app.infrastructure.db.models import Region
+from city_api.application.dto.region import NewRegionDTO
+from city_api.infrastructure.db.models import Region
 
 
 async def test_get_regions(

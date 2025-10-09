@@ -5,20 +5,20 @@ from uuid import uuid4
 import pytest
 from faker import Faker
 
-from app.application.commands.region import CreateRegionCommand
-from app.application.dto.region import NewRegionDTO
-from app.application.interactors.region import (
+from city_api.application.commands.region import CreateRegionCommand
+from city_api.application.dto.region import NewRegionDTO
+from city_api.application.interactors.region import (
     DeleteRegionInteractor,
     GetRegionByIdInteractor,
     GetRegionsInteractor,
 )
-from app.application.interface.region.region import (
+from city_api.application.interface.region.region import (
     RegionDeleter,
     RegionReader,
     RegionSaver,
 )
-from app.application.interface.transaction_manager import TransactionManager
-from app.domain.entities.region import RegionDM
+from city_api.application.interface.transaction_manager import TransactionManager
+from city_api.domain.entities.region import RegionDM
 
 pytestmark = pytest.mark.asyncio
 

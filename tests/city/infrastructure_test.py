@@ -3,9 +3,9 @@ from faker import Faker
 from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.entities.city import CityDM
-from app.infrastructure.db.gateway.city import CityGateway
-from app.infrastructure.db.models import City, District, Region
+from city_api.domain.entities.city import CityDM
+from city_api.infrastructure.db.gateway.city import CityGateway
+from city_api.infrastructure.db.models import City, District, Region
 
 pytestmark = pytest.mark.asyncio
 

@@ -13,12 +13,13 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from app.config import AuthSettings, Config, PostgresConfig
-from app.infrastructure.db.models import BaseModel
-from app.ioc import AppProvider
-from app.presentation.api.city import city_router
-from app.presentation.api.district import district_router
-from app.presentation.api.region import region_router
+from city_api.config import AuthSettings, Config, PostgresConfig
+from city_api.infrastructure.db.models import BaseModel
+from city_api.ioc import AppProvider
+from city_api.presentation.api.city import city_router
+from city_api.presentation.api.district import district_router
+from city_api.presentation.api.region import region_router
+from city_api.presentation.auth.asgi_middleware import ASGIAuthMiddleware
 
 pytestmark = pytest.mark.asyncio
 
@@ -109,6 +110,8 @@ def valid_access_token(jwt_config: AuthSettings):
 @pytest.fixture
 async def http_app(container: AsyncContainer) -> FastAPI:
     app = FastAPI()
+
+    app.add_middleware(ASGIAuthMiddleware)
     app.include_router(district_router)
     app.include_router(region_router)
     app.include_router(city_router)
