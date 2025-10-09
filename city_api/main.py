@@ -1,21 +1,10 @@
-from concurrent.futures import ThreadPoolExecutor
-
 import uvicorn
 from dishka import make_async_container
 from dishka.integrations.fastapi import FastapiProvider, setup_dishka
-from dishka.integrations.grpcio import DishkaAioInterceptor, GrpcioProvider
 from fastapi import FastAPI
-from grpc.aio import server as make_server
 
 from city_api.config import Config
-from city_api.infrastructure.grpc.city.city_pb2_grpc import add_CityServiceServicer_to_server
-from city_api.infrastructure.grpc.district.district_pb2_grpc import (
-    add_DistrictServiceServicer_to_server,
-)
-from city_api.infrastructure.grpc.region.region_pb2_grpc import (
-    add_RegionServiceServicer_to_server,
-)
-from city_api.ioc import AppProvider
+from city_api.di.main import ioc_factory
 from city_api.presentation.api.auth.change_password import change_password_router
 from city_api.presentation.api.auth.log_in import log_in_router
 from city_api.presentation.api.auth.log_out import log_out_router
@@ -24,9 +13,6 @@ from city_api.presentation.api.city import city_router
 from city_api.presentation.api.district import district_router
 from city_api.presentation.api.region import region_router
 from city_api.presentation.auth.asgi_middleware import ASGIAuthMiddleware
-from city_api.presentation.grpc.city import CityGRPCService
-from city_api.presentation.grpc.district import DistrictGRPCService
-from city_api.presentation.grpc.region import RegionGRPCService
 
 
 def get_fastapi_app() -> FastAPI:
@@ -43,7 +29,7 @@ def get_fastapi_app() -> FastAPI:
     app.add_middleware(ASGIAuthMiddleware)
 
     async_container = make_async_container(
-        AppProvider(), FastapiProvider(), context={Config: config}
+        *ioc_factory(), FastapiProvider(), context={Config: config}
     )
     setup_dishka(container=async_container, app=app)
 
@@ -65,29 +51,5 @@ async def run_http_app():
     await run_api(app)
 
 
-async def run_grpc_app():
-    config = Config()
-    container = make_async_container(
-        AppProvider(), GrpcioProvider(), context={Config: config}
-    )
-
-    server = make_server(
-        ThreadPoolExecutor(max_workers=10),
-        interceptors=[DishkaAioInterceptor(container)],
-    )
-
-    add_RegionServiceServicer_to_server(RegionGRPCService(), server)
-    add_DistrictServiceServicer_to_server(DistrictGRPCService(), server)
-    add_CityServiceServicer_to_server(CityGRPCService(), server)
-
-    server.add_insecure_port('[::]:50051')
-
-    await server.start()
-    await server.wait_for_termination()
-
-
-async def main(server_type: str) -> None:
-    if server_type == 'HTTP':
-        await run_http_app()
-    elif server_type == 'GRPC':
-        await run_grpc_app()
+async def main() -> None:
+    await run_http_app()

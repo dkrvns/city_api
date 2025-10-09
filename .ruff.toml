@@ -32,7 +32,7 @@ exclude = [
   "*.pyc",
   "migrations",
   "node_modules",
-  "app/infrastructure/grpc"
+  "city_api/infrastructure/grpc"
 ]
 
 # Настройка isort (сортировка импортов)

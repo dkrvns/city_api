@@ -14,8 +14,8 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from city_api.config import AuthSettings, Config, PostgresConfig
+from city_api.di.main import AppProvider
 from city_api.infrastructure.db.models import BaseModel
-from city_api.ioc import AppProvider
 from city_api.presentation.api.city import city_router
 from city_api.presentation.api.district import district_router
 from city_api.presentation.api.region import region_router
@@ -65,7 +65,7 @@ async def session(
 
 @pytest.fixture
 def mock_provider(session: AsyncSession) -> Provider:
-    class MockProvider(AppProvider):
+    class MockProvider(*AppProvider):
         @provide(scope=Scope.REQUEST)
         async def get_session(
             self, session_maker: async_sessionmaker[AsyncSession]

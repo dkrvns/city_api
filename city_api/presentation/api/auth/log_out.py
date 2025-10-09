@@ -2,7 +2,6 @@ from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, HTTPException, status
 
-from city_api.application.errors import EntityNotExistsError
 from city_api.infrastructure.auth.exception import UserLoggedOutError
 from city_api.infrastructure.auth.handler.log_out import LogOutHandler
 

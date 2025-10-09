@@ -61,7 +61,9 @@ def log_in_request(faker: Faker) -> LoginInRequest:
 
 
 @pytest.fixture
-async def user_signed_up(clean_http_client: AsyncClient, log_in_request: LoginInRequest):
+async def user_signed_up(
+    clean_http_client: AsyncClient, log_in_request: LoginInRequest
+):
     await clean_http_client.post(
         '/auth/signup',
         json={'email': log_in_request.email, 'password': log_in_request.password},
@@ -212,6 +214,7 @@ def logout_request(faker: Faker) -> LoginInRequest:
         email=faker.pystr(),
         password=faker.pystr(),
     )
+
 
 async def test_logout(
     logout_request: LoginInRequest,

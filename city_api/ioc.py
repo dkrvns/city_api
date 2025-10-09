@@ -53,8 +53,12 @@ from city_api.config import AuthSettings, Config
 from city_api.domain.ports.jwt_encoder import JwtAccessTokenEncoder
 from city_api.domain.ports.password_hasher import PasswordHasher
 from city_api.domain.services.user import UserService
-from city_api.infrastructure.auth.adapter.jwt_access_token_jose import JWTAccessTokenJose
-from city_api.infrastructure.auth.adapter.password_hasher_bcrypt import BcryptPasswordHasher
+from city_api.infrastructure.auth.adapter.jwt_access_token_jose import (
+    JWTAccessTokenJose,
+)
+from city_api.infrastructure.auth.adapter.password_hasher_bcrypt import (
+    BcryptPasswordHasher,
+)
 from city_api.infrastructure.auth.gateway.refresh_token import RefreshTokenGateway
 from city_api.infrastructure.auth.handler.change_password import ChangePasswordHandler
 from city_api.infrastructure.auth.handler.log_in import LogInHandler
