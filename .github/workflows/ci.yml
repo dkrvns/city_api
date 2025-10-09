@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ '**' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Start services with Docker Compose
+        run: |
+          docker-compose up -d --build
+
+      - name: Wait for services to be ready (optional but recommended)
+        run: |
+          sleep 10
+
+      - name: Run Alembic migrations
+        run: |
+          docker compose exec -T city-city_api-postgres-test alembic upgrade head
+
+      - name: Run tests
+        run: |
+          docker-compose exec -T city-city_api-postgres-test python -m pytest tests/
+
+      - name: Shutdown services
+        if: always()
+        run: |
+          docker-compose down -v
