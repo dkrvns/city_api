@@ -25,6 +25,9 @@ jobs:
       - name: Run Alembic migrations
         run: uv run alembic upgrade head
 
+      - name: Run Tests
+        run: uv python pytest tests/
+
       - name: Shutdown services
         if: always()
         run: |
