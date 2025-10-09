@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: city-app-postgres
+    container_name: city-city_api-postgres
     environment:
       POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
@@ -11,7 +11,7 @@ services:
 
   postgres_test:
     image: postgres:16-alpine
-    container_name: city-app-postgres-test
+    container_name: city-city_api-postgres-test
     environment:
       POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
