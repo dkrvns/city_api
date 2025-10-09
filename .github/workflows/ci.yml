@@ -19,17 +19,11 @@ jobs:
         run: |
           docker compose up -d --build
 
-      - name: Wait for services to be ready (optional but recommended)
-        run: |
-          sleep 10
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
 
       - name: Run Alembic migrations
-        run: |
-          docker compose exec -T city-city_api-postgres-test alembic upgrade head
-
-      - name: Run tests
-        run: |
-          docker compose exec -T city-city_api-postgres-test python -m pytest tests/
+        run: uv run alembic upgrade head
 
       - name: Shutdown services
         if: always()
